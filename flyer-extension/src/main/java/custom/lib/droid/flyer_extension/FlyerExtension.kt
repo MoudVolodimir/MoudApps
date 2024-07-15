@@ -43,7 +43,7 @@ object FlyerExtension {
 
         // Запускаем таймер в корутине
         CoroutineScope(Dispatchers.Main + job).launch {
-            delay(7_000) // здесь укажите необходимое время задержки
+            delay(10_000) // здесь укажите необходимое время задержки
 
             if (res == null) {
                 Log.e("TAG", "setExtension: time out")
