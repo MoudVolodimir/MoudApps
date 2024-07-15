@@ -6,7 +6,6 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import com.appsflyer.AppsFlyerConversionListener
 import com.appsflyer.AppsFlyerLib
-import custom.lib.droid.decrypt_helper.EncryptionHelper
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -14,9 +13,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.util.Locale
-import java.util.Timer
-import java.util.TimerTask
-
 
 object FlyerExtension {
 
@@ -58,6 +54,8 @@ object FlyerExtension {
             override fun onConversionDataSuccess(conversionData: MutableMap<String, Any>) {
                 Log.e("TAG", "onConversionDataSuccess", )
                 res = FlyerStatus.SUCCESS
+                job.cancel()
+                Log.e("TAG", "onConversionDataSuccess: ${job.isActive}", )
 
                 MEDIA_SOURCE = conversionData["media_source"].toString()
                 AF_SITEID = conversionData["af_siteid"].toString()
@@ -78,29 +76,30 @@ object FlyerExtension {
                     Log.e("TAG", "onConversionDataSuccess: IS NON ORGANIC, CONDITION FAILED.", )
                     onError()
                 }
-
-                job.cancel()
             }
 
             override fun onAppOpenAttribution(p0: MutableMap<String, String>?) {
+                job.cancel()
+                Log.e("TAG", "onConversionDataSuccess: ${job.isActive}", )
                 Log.e("TAG", "onAppOpenAttribution: onAppOpenAttribution", )
                 res = FlyerStatus.ERROR
                 onError()
-                job.cancel()
             }
 
             override fun onAttributionFailure(errorMessage: String?) {
+                job.cancel()
+                Log.e("TAG", "onConversionDataSuccess: ${job.isActive}", )
                 Log.e("TAG", "onAttributionFailure: onAttributionFailure", )
                 res = FlyerStatus.ERROR
                 onError()
-                job.cancel()
             }
 
             override fun onConversionDataFail(errorMessage: String?) {
+                job.cancel()
+                Log.e("TAG", "onConversionDataSuccess: ${job.isActive}", )
                 Log.e("TAG", "onConversionDataFail: onConversionDataFail", )
                 res = FlyerStatus.ERROR
                 onError()
-                job.cancel()
             }
         }
 
@@ -140,4 +139,3 @@ fun isNDaysPassed(startDate: LocalDate, n: Int): Boolean {
     val endDate = startDate.plusDays(n.toLong())
     return currentDate.isAfter(endDate) || currentDate.isEqual(endDate)
 }
-
